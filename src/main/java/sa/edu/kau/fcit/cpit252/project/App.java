@@ -1,10 +1,11 @@
 package sa.edu.kau.fcit.cpit252.project;
 
-/**
- * Hello world!
- */
+import sa.edu.kau.fcit.cpit252.project.factory.RitualFactory;
+import sa.edu.kau.fcit.cpit252.project.model.Ritual;
+
+
 public class App {
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+
     }
 }
