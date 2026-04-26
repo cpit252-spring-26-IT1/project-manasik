@@ -7,4 +7,6 @@ public interface Ritual {
     String getName();
     //return steps for ritual
     List<String> getSteps();
+    //return step details
+    List<String> getDetails();
 }
