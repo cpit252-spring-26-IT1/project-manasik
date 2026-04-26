@@ -7,18 +7,19 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
+import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
 
 public class RitualSelectionMenu extends Application {
 
+    private final Ritualfacade facade = new Ritualfacade();
+
     @Override
     public void start(Stage stage) {
-        // --- Root Container (The dark background) ---
+        // --- Root Container ---
         VBox root = new VBox(40);
-        root.setStyle("-fx-background-color: #0B121E;"); // Dark Navy
+        root.setStyle("-fx-background-color: #0B121E;");
         root.setAlignment(Pos.TOP_CENTER);
 
         // --- Top Navigation Bar ---
@@ -26,7 +27,6 @@ public class RitualSelectionMenu extends Application {
         topBar.setPadding(new Insets(15, 20, 15, 20));
         topBar.setSpacing(100);
         topBar.setAlignment(Pos.CENTER_LEFT);
-        // Rounded bottom corners for the header like in your Figma
         topBar.setStyle("-fx-background-color: #007A53; -fx-background-radius: 0 0 25 25;");
 
         Label brandName = new Label("Manasik");
@@ -38,12 +38,11 @@ public class RitualSelectionMenu extends Application {
         centerContent.setAlignment(Pos.CENTER);
         centerContent.setPadding(new Insets(50, 0, 20, 0));
 
-        // Placeholder for Kaaba Icon (Emoji for now, or use an ImageView)
         Label kaabaIcon = new Label("🕋");
         kaabaIcon.setStyle("-fx-font-size: 80px;");
 
         Label mainTitle = new Label("Manasik");
-        mainTitle.setStyle("-fx-text-fill: white; -fx-font-size: 28px; -fx-font-family: 'System';");
+        mainTitle.setStyle("-fx-text-fill: white; -fx-font-size: 28px;");
 
         centerContent.getChildren().addAll(kaabaIcon, mainTitle);
 
@@ -52,7 +51,7 @@ public class RitualSelectionMenu extends Application {
         buttonContainer.setAlignment(Pos.CENTER);
 
         String buttonStyle =
-                "-fx-background-color: #00A676; " + // Bright Green
+                "-fx-background-color: #00A676; " +
                         "-fx-text-fill: white; " +
                         "-fx-font-size: 16px; " +
                         "-fx-font-weight: bold; " +
@@ -61,29 +60,32 @@ public class RitualSelectionMenu extends Application {
                         "-fx-background-radius: 15; " +
                         "-fx-cursor: hand;";
 
-        Button hajjBtn = new Button("Hajj");
+        Button hajjBtn = new Button("الحج");
         hajjBtn.setStyle(buttonStyle);
 
-        Button umrahBtn = new Button("Umrah");
+        Button umrahBtn = new Button("العمرة");
         umrahBtn.setStyle(buttonStyle);
 
         buttonContainer.getChildren().addAll(hajjBtn, umrahBtn);
 
-        // --- Assemble Everything ---
+        // --- Assemble ---
         root.getChildren().addAll(topBar, centerContent, buttonContainer);
 
-        Scene scene = new Scene(root, 360, 740); // Standard phone ratio
-        stage.setTitle("Manasik Selection");
+        Scene scene = new Scene(root, 360, 740);
+        stage.setTitle("Manasik");
         stage.setScene(scene);
         stage.show();
 
-        // --- CLICK LOGIC (Matching to other classes later) ---
-        umrahBtn.setOnAction(e -> handleSelection("Umrah"));
-        hajjBtn.setOnAction(e -> handleSelection("Hajj"));
+        // --- Button Actions ---
+        hajjBtn.setOnAction(e -> handleSelection("Hajj", stage));
+        umrahBtn.setOnAction(e -> handleSelection("Umrah", stage));
     }
 
-    private void handleSelection(String type) {
-        System.out.println("Selected: " + type);
-        // This is where we will call Member #1's Factory later!
+    private void handleSelection(String type, Stage stage) {
+        // Use the Facade to start the ritual
+        if (facade.startRitual(type)) {
+            // Open the Roadmap screen
+            new RoadmapScreen(facade).show(stage);
+        }
     }
 }
