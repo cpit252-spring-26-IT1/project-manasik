@@ -10,9 +10,11 @@ is a desktop application built with JavaFX that serves as a digital guide for pi
 
 ## Features
 - A: Ritual selection: users can choose between Hajj or Umrah rituals seamlessly.
-- B: Factory pattern integration: uses a dedicated RitualFactory to generate ritual objects dynamically based on user input.
+- B: Dark mode and Light mode support.
 - C: Comprehensive roadmap: provides a complete list of steps based on authentic sources.
 - D: Multi-language support: arabic and english.
+- E: Start Your Journey: Begin the ritual from step 1 with a single tap and follow it through to the end.
+- F. Jump to Any Step: Tap any step in the roadmap to go straight to it — useful if you've already completed earlier steps.
 
 
 ## Usage
