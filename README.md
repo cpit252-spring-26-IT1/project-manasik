@@ -4,7 +4,7 @@
 
 ---
 
-## 📖 About the Project
+##  About the Project
 
 Many pilgrims — especially first-time visitors — get confused about the correct order of Hajj and Umrah rituals.
 Existing solutions like YouTube videos, booklets, and tour guides are not interactive or step-by-step in real time.
@@ -13,9 +13,9 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 
 ---
 
-## ✨ Features
+##  Features
 
-### ✅ Implemented (v1.0,v2.0)
+###  Implemented (v1.0,v2.0)
 
 | # | Feature |                                    Description
 
@@ -25,7 +25,7 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 | 4 | View Step Details | Tap any step to see its description and instructions.                                                        
 | 5 | Jump to Specific Step | Tap any step in the roadmap to go straight to it useful if earlier steps are already completed in real life.
 
-### 🚧 Planned
+###  Planned
 
 | # | Feature
 
@@ -36,7 +36,7 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 
 ---
 
-## 🏗️  Design Patterns
+##   Design Patterns
 
 The project uses a clean layered architecture with two design patterns from the GoF catalog:
 
@@ -59,7 +59,7 @@ which would make the UI complex and tightly coupled. The Facade gives the UI one
 so changing any subsystem later won't affect the UI.
 
 
-## 🚀 Build & Run
+##  Build & Run
 
 ### Prerequisites
 
@@ -98,7 +98,7 @@ A ready-to-run JAR is available on the [Releases page](https://github.com/cpit25
 
 ---
 
-## 📸 Screenshots
+##  Screenshots
 
 Selection screen:
 <img width="1919" height="1139" alt="Selection_Screen" src="https://github.com/user-attachments/assets/bfa40d7d-2491-4780-bad5-80b57ee5960b" />
@@ -112,7 +112,7 @@ RoadMap of Umrah:
 Step details:
 <img width="1919" height="1143" alt="Step_Details" src="https://github.com/user-attachments/assets/5761e709-231c-4bd1-ab3d-099d1f9aa134" />
 
-## 📄 License
+##  License
 
 This project is licensed under the MIT License — see the [LICENSE](LICENSE) file for details.
 
