@@ -9,13 +9,13 @@
 Many pilgrims — especially first-time visitors — get confused about the correct order of Hajj and Umrah rituals.
 Existing solutions like YouTube videos, booklets, and tour guides are not interactive or step-by-step in real time.
 
-**Manasik** solves this by guiding the user step-by-step from start to finish, with a clear checklist, the ability to jump to any step, and progress tracking.
+Manasik solves this by guiding the user step-by-step from start to finish, with a clear checklist, the ability to jump to any step, and progress tracking.
 
 ---
 
 ## ✨ Features
 
-### ✅ Implemented (v1.0,V2.0)
+### ✅ Implemented (v1.0,v2.0)
 
 | # | Feature |                                    Description
 
