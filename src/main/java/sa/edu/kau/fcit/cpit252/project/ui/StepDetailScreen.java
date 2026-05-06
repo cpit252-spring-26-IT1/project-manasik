@@ -162,10 +162,50 @@ public class StepDetailScreen {
         doneRow.setAlignment(Pos.CENTER);
         doneRow.setPadding(new Insets(10, 0, 0, 0));
 
+        // ============== NEXT / PREVIOUS BUTTONS (issue #18) ==============
+        Button prevBtn = new Button("السابق ←");
+        prevBtn.setStyle(
+                "-fx-background-color: #152033; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-min-width: 130px; " +
+                        "-fx-min-height: 45px; " +
+                        "-fx-background-radius: 12; " +
+                        "-fx-border-color: #00A676; " +
+                        "-fx-border-radius: 12; " +
+                        "-fx-border-width: 1; " +
+                        "-fx-cursor: hand;");
+        prevBtn.setDisable(stepIndex <= 0);
+        prevBtn.setOnAction(e -> {
+            facade.jumpToStep(stepIndex - 1);
+            new StepDetailScreen(facade, stepIndex - 1).show(stage);
+        });
+
+        Button nextBtn = new Button("→ التالي");
+        nextBtn.setStyle(
+                "-fx-background-color: #00A676; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 14px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-min-width: 130px; " +
+                        "-fx-min-height: 45px; " +
+                        "-fx-background-radius: 12; " +
+                        "-fx-cursor: hand;");
+        nextBtn.setDisable(stepIndex >= totalSteps - 1);
+        nextBtn.setOnAction(e -> {
+            facade.jumpToStep(stepIndex + 1);
+            new StepDetailScreen(facade, stepIndex + 1).show(stage);
+        });
+
+        HBox navRow = new HBox(15, prevBtn, nextBtn);
+        navRow.setAlignment(Pos.CENTER);
+        navRow.setPadding(new Insets(5, 0, 0, 0));
+
         // ============== CONTENT WRAPPER ==============
         VBox content = new VBox(20);
         content.setPadding(new Insets(0, 18, 25, 18));
-        content.getChildren().addAll(header, detailsCard, doneRow);
+        content.getChildren().addAll(header, detailsCard, doneRow, navRow);
 
         // ============== SCROLLABLE ==============
         ScrollPane scrollPane = new ScrollPane(content);
