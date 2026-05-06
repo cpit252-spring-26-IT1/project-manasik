@@ -73,6 +73,48 @@ public class Ritualfacade {
     public double getProgressPercentage() {
         if (ritual == null) return 0.0;
         return progressManager.getProgressPerecentage(ritual.getSteps().size());
+
+        // ===== NEW: Navigation (issue #18) =====
+
+        public int getCurrentStepIndex() {
+            return progressManager.getCurrentIndex();
+        }
+
+        public boolean goToNextStep() {
+            if (ritual == null) return false;
+            int current = progressManager.getCurrentIndex();
+            int total = ritual.getSteps().size();
+            if (!validator.canGoNext(current, total)) return false;
+            progressManager.goToNext();
+            return true;
+        }
+
+        public boolean goToPreviousStep() {
+            if (ritual == null) return false;
+            if (!validator.canGoPrevious(progressManager.getCurrentIndex())) return false;
+            progressManager.goToPrevious();
+            return true;
+        }
+
+        public boolean jumpToStep(int index) {
+            if (ritual == null) return false;
+            int total = ritual.getSteps().size();
+            if (!validator.isValidJump(index, total)) return false;
+            progressManager.setCurrentIndex(index);
+            return true;
+        }
+
+        public boolean canGoNext() {
+            if (ritual == null) return false;
+            return validator.canGoNext(progressManager.getCurrentIndex(), ritual.getSteps().size());
+        }
+
+        public boolean canGoPrevious() {
+            if (ritual == null) return false;
+            return validator.canGoPrevious(progressManager.getCurrentIndex());
+        }
+
+
     }
 
 
