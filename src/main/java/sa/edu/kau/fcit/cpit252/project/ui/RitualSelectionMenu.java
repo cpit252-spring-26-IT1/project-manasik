@@ -9,7 +9,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
-import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
+import java.util.Optional;
 
 public class RitualSelectionMenu extends Application {
 
@@ -82,9 +84,35 @@ public class RitualSelectionMenu extends Application {
     }
 
     private void handleSelection(String type, Stage stage) {
-        // Use the Facade to start the ritual
+        // Check if there's saved progress for this ritual (issue #19)
+        if (facade.hasSavedProgress(type)) {
+            int savedStep = facade.getSavedStepIndex(type) + 1;
+
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+            alert.setTitle("متابعة الرحلة");
+            alert.setHeaderText("لديك تقدم محفوظ");
+            alert.setContentText("هل تريد المتابعة من الخطوة " + savedStep + "؟");
+
+            ButtonType resumeBtn = new ButtonType("متابعة");
+            ButtonType restartBtn = new ButtonType("البدء من جديد");
+            ButtonType cancelBtn = new ButtonType("إلغاء", ButtonType.CANCEL.getButtonData());
+            alert.getButtonTypes().setAll(resumeBtn, restartBtn, cancelBtn);
+
+            Optional<ButtonType> choice = alert.showAndWait();
+            if (choice.isEmpty() || choice.get() == cancelBtn) return;
+
+            if (choice.get() == resumeBtn) {
+                if (facade.resumeRitual(type)) {
+                    new RoadmapScreen(facade).show(stage);
+                }
+                return;
+            }
+            // Restart: clear saved progress and start fresh
+            facade.clearSavedProgress();
+        }
+
+        // No saved progress (or user chose restart) → start fresh
         if (facade.startRitual(type)) {
-            // Open the Roadmap screen
             new RoadmapScreen(facade).show(stage);
         }
     }
