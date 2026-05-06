@@ -2,8 +2,10 @@ package sa.edu.kau.fcit.cpit252.project.facade;
 
 import sa.edu.kau.fcit.cpit252.project.factory.RitualFactory;
 import sa.edu.kau.fcit.cpit252.project.model.Ritual;
+import sa.edu.kau.fcit.cpit252.project.service.ProgressPersistence;
 import sa.edu.kau.fcit.cpit252.project.service.RitualProgressManager;
 import sa.edu.kau.fcit.cpit252.project.service.RitualValidator;
+import sa.edu.kau.fcit.cpit252.project.service.SavedProgress;
 
 import java.util.List;
 
@@ -12,10 +14,12 @@ public class Ritualfacade {
     private Ritual ritual;
     private final RitualProgressManager progressManager;
     private final RitualValidator validator;
+    private final ProgressPersistence persistence;
 
     public Ritualfacade() {
         this.progressManager = new RitualProgressManager();
         this.validator = new RitualValidator();
+        this.persistence = new ProgressPersistence();
     }
 
     // When the user picks Hajj or Umrah
@@ -61,6 +65,7 @@ public class Ritualfacade {
             return false;
         }
         progressManager.markStepDone(current);
+        persist();
         return true;
     }
 
@@ -73,7 +78,7 @@ public class Ritualfacade {
     public double getProgressPercentage() {
         if (ritual == null) return 0.0;
         return progressManager.getProgressPerecentage(ritual.getSteps().size());
-
+    }
         // ===== NEW: Navigation (issue #18) =====
 
         public int getCurrentStepIndex() {
@@ -86,6 +91,7 @@ public class Ritualfacade {
             int total = ritual.getSteps().size();
             if (!validator.canGoNext(current, total)) return false;
             progressManager.goToNext();
+            persist();
             return true;
         }
 
@@ -93,6 +99,7 @@ public class Ritualfacade {
             if (ritual == null) return false;
             if (!validator.canGoPrevious(progressManager.getCurrentIndex())) return false;
             progressManager.goToPrevious();
+            persist();
             return true;
         }
 
@@ -101,6 +108,7 @@ public class Ritualfacade {
             int total = ritual.getSteps().size();
             if (!validator.isValidJump(index, total)) return false;
             progressManager.setCurrentIndex(index);
+            persist();
             return true;
         }
 
@@ -115,7 +123,51 @@ public class Ritualfacade {
         }
 
 
+        // saves current ritual state to disk
+        private void persist() {
+        if (ritual == null) return;
+        persistence.save(ritual.getName(),
+                progressManager.getCurrentIndex(),
+                progressManager.getCompletedSteps());
     }
 
 
-}
+        // restores ritual state from disk if it matches the type
+        public boolean resumeRitual(String type) {
+        if (!startRitual(type)) return false;
+        SavedProgress saved = persistence.load();
+        if (saved != null && saved.getRitualName().equalsIgnoreCase(ritual.getName())) {
+            int total = ritual.getSteps().size();
+            int idx = (saved.getCurrentIndex() >= 0 && saved.getCurrentIndex() < total)
+                    ? saved.getCurrentIndex() : 0;
+            progressManager.restoreState(idx, saved.getCompletedSteps());
+            return true;
+        }
+        return false;
+    }
+
+       // checks if progress exists for the given ritual type
+        public boolean hasSavedProgress(String type) {
+        SavedProgress saved = persistence.load();
+        return saved != null && saved.getRitualName().equalsIgnoreCase(type);
+    }
+
+        // gets the saved step index for a ritual
+        public int getSavedStepIndex(String type) {
+        SavedProgress saved = persistence.load();
+        if (saved != null && saved.getRitualName().equalsIgnoreCase(type)) {
+            return saved.getCurrentIndex();
+        }
+        return -1;
+    }
+
+        // deletes the saved progress file
+        public void clearSavedProgress() {
+        persistence.clear();
+    }
+
+
+    }
+
+
+
