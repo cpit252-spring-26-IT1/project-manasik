@@ -137,10 +137,35 @@ public class StepDetailScreen {
 
         detailsCard.getChildren().addAll(detailsHeader, detailsLabel);
 
+        // ============== MARK AS DONE BUTTON ==============
+        Button doneBtn = new Button();
+        boolean alreadyDone = facade.isStepCompleted(stepIndex);
+        doneBtn.setText(alreadyDone ? "✓ تم" : "تم");
+        doneBtn.setStyle(
+                "-fx-background-color: " + (alreadyDone ? "#4a4a4a" : "#00A676") + "; " +
+                        "-fx-text-fill: white; " +
+                        "-fx-font-size: 16px; " +
+                        "-fx-font-weight: bold; " +
+                        "-fx-min-width: 280px; " +
+                        "-fx-min-height: 50px; " +
+                        "-fx-background-radius: 15; " +
+                        "-fx-cursor: hand;");
+        doneBtn.setDisable(alreadyDone);
+        doneBtn.setOnAction(e -> {
+            if (facade.completeCurrentStep()) {
+                // Refresh screen to show new state
+                new StepDetailScreen(facade, stepIndex).show(stage);
+            }
+        });
+
+        HBox doneRow = new HBox(doneBtn);
+        doneRow.setAlignment(Pos.CENTER);
+        doneRow.setPadding(new Insets(10, 0, 0, 0));
+
         // ============== CONTENT WRAPPER ==============
         VBox content = new VBox(20);
         content.setPadding(new Insets(0, 18, 25, 18));
-        content.getChildren().addAll(header, detailsCard);
+        content.getChildren().addAll(header, detailsCard, doneRow);
 
         // ============== SCROLLABLE ==============
         ScrollPane scrollPane = new ScrollPane(content);
