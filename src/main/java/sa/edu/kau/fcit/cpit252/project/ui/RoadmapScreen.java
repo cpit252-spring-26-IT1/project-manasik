@@ -10,6 +10,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
+import javafx.scene.control.ProgressBar;
 
 import java.util.List;
 
@@ -69,9 +70,26 @@ public class RoadmapScreen {
 
         topBar.getChildren().addAll(backBtn, startBtn, spacer, title);
 
+        // --- Progress Bar ---
+        VBox progressBox = new VBox(8);
+        progressBox.setPadding(new Insets(15, 20, 5, 20));
+        progressBox.setAlignment(Pos.CENTER_LEFT);
+
+        double progress = facade.getProgressPercentage() / 100.0;
+        Label progressLabel = new Label(
+                "التقدم: " + (int) facade.getProgressPercentage() + "%");
+        progressLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;");
+
+        ProgressBar progressBar = new ProgressBar(progress);
+        progressBar.setStyle("-fx-accent: #00A676;");
+        progressBar.setMaxWidth(Double.MAX_VALUE);
+        progressBar.setMinHeight(12);
+
+        progressBox.getChildren().addAll(progressLabel, progressBar);
+
         // --- Steps List ---
         VBox stepsList = new VBox(10);
-        stepsList.setPadding(new Insets(20, 20, 20, 20));
+        stepsList.setPadding(new Insets(10, 20, 20, 20));
 
         List<String> steps = facade.getAllSteps();
         for (int i = 0; i < steps.size(); i++) {
@@ -94,7 +112,7 @@ public class RoadmapScreen {
         startBtn.setOnAction(e -> new StepDetailScreen(facade, 0).show(stage));
 
         // --- Assemble ---
-        root.getChildren().addAll(topBar, scrollPane);
+        root.getChildren().addAll(topBar, progressBox, scrollPane);
 
         Scene scene = new Scene(root, 360, 740);
         stage.setTitle("Roadmap");
@@ -108,10 +126,12 @@ public class RoadmapScreen {
         row.setPadding(new Insets(12, 15, 12, 15));
         row.setStyle("-fx-background-color: #152033; -fx-background-radius: 12; -fx-cursor: hand;");
 
-        // Step number circle
-        Label numLabel = new Label(String.valueOf(index + 1));
+        boolean done = facade.isStepCompleted(index);
+
+        // Step number / checkmark circle (issue #13)
+        Label numLabel = new Label(done ? "✓" : String.valueOf(index + 1));
         numLabel.setStyle(
-                "-fx-background-color: #007A53; " +
+                "-fx-background-color: " + (done ? "#00A676" : "#007A53") + "; " +
                         "-fx-text-fill: white; " +
                         "-fx-font-size: 13px; " +
                         "-fx-font-weight: bold; " +
@@ -120,7 +140,6 @@ public class RoadmapScreen {
                         "-fx-background-radius: 15; " +
                         "-fx-alignment: center;");
 
-        // Arabic step name (right-to-left)
         Label nameLabel = new Label(stepName);
         nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14px;");
         nameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
