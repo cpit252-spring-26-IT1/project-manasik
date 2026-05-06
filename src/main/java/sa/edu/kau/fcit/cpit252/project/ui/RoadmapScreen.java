@@ -96,9 +96,11 @@ public class RoadmapScreen {
             final int index = i;
             HBox stepRow = buildStepRow(i, steps.get(i));
 
-            // Click any step → open StepDetailScreen for that step
-            stepRow.setOnMouseClicked(e ->
-                    new StepDetailScreen(facade, index).show(stage));
+            // Click any step → jump to it via facade, then open detail screen (issue #18)
+            stepRow.setOnMouseClicked(e -> {
+                facade.jumpToStep(index);
+                new StepDetailScreen(facade, index).show(stage);
+            });
 
             stepsList.getChildren().add(stepRow);
         }
@@ -109,7 +111,10 @@ public class RoadmapScreen {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         // --- Start Journey button action ---
-        startBtn.setOnAction(e -> new StepDetailScreen(facade, 0).show(stage));
+        startBtn.setOnAction(e -> {
+            facade.jumpToStep(0);
+            new StepDetailScreen(facade, 0).show(stage);
+        });
 
         // --- Assemble ---
         root.getChildren().addAll(topBar, progressBox, scrollPane);
