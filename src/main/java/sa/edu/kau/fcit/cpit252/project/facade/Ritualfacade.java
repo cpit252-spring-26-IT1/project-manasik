@@ -79,7 +79,7 @@ public class Ritualfacade {
         if (ritual == null) return 0.0;
         return progressManager.getProgressPerecentage(ritual.getSteps().size());
     }
-        // ===== NEW: Navigation (issue #18) =====
+
 
         public int getCurrentStepIndex() {
             return progressManager.getCurrentIndex();

@@ -15,7 +15,7 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 
 ##  Features
 
-###  Implemented (v1.0,v2.0)
+###  Implemented (v1.0,v2.0,v2.1)
 
 | # | Feature |                                    Description
 
@@ -24,21 +24,23 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 | 3 | Start Journey | Begin the ritual from step 1 with a single tap and follow it through to the end.                             
 | 4 | View Step Details | Tap any step to see its description and instructions.                                                        
 | 5 | Jump to Specific Step | Tap any step in the roadmap to go straight to it useful if earlier steps are already completed in real life.
+| 6 | Complete Step & Progress Tracking | mark steps as done, progress bar and checkmarks update in real time.
+| 7 | Next / Previous Step Navigation | navigate between steps from the Step Detail screen with disabled at boundary buttons.
+| 8 | Resume Progress / Save State | progress is automatically saved to disk and restored when the app is reopened.
 
 ###  Planned
 
-| # | Feature
+| # | Feature |                                                      Description
 
-| 6 | Complete Step & Progress Tracking
-| 7 | Next / Previous Step Navigation
-| 8 | Dark Mode / Light Mode toggle
-| 9 | Multi-language support (Arabic / English)
+| 9 | Tawaf and Sa'i Counter | At each step that involves Tawaf or Sa'i the user gets a counter that goes up to 7 to track how many rounds have been completed.
+| 10 | Dark Mode / Light Mode toggle | Switch the entire app between a dark and a light theme from settings.
+| 11 | Multi-language support (Arabic / English) |  (Arabic / English)Switch all step names, details, and UI labels between Arabic and English.
 
 ---
 
 ##   Design Patterns
 
-The project uses a clean layered architecture with two design patterns from the GoF catalog:
+The project uses a clean layered architecture with two design patterns from the GoF catalog.
 
 ### 1. Creational — Factory Pattern (Stage 1)
 
@@ -54,9 +56,18 @@ The Factory keeps the UI decoupled from the concrete classes and makes it easy t
 **File:** [`RitualFacade.java`](src/main/java/sa/edu/kau/fcit/cpit252/project/facade/RitualFacade.java)
 
 Why we chose it:
-The UI needs to coordinate two subsystems (the Factory that creates rituals, and the Progress Manager that tracks the user's current step) for every action,
-which would make the UI complex and tightly coupled. The Facade gives the UI one simple entry point and hides all the internal coordination,
-so changing any subsystem later won't affect the UI.
+Every user action in the app involves coordinating several subsystems creating the right ritual, validating whether the action is allowed,
+updating the user's progress state, and saving that progress to disk.
+Without a Facade, the UI would have to call all of these classes directly for every button press,
+which would couple the UI tightly to the internals and make every feature change risky.
+The RitualFacade solves this by sitting between the UI and four subsystems and exposing one simple method per user action.
+
+The four subsystems coordinated by the Facade:
+
+1- RitualFactory: creates the correct ritual object Hajj or Umrah based on the user's choice.
+2- RitualProgressManager: stores the user's current step index and the set of completed steps computes the progress percentage.
+3- decides whether actions are allowed canGoNext, canGoPrevious, isValidJump and canMarkDone.
+4- saves and loads progress to a small properties file in the user's home directory so progress survives app restarts.
 
 
 ##  Build & Run
@@ -89,7 +100,7 @@ mvn javafx:run
 Or, after building, run the packaged JAR:
 
 ```bash
-java -jar target/project-manasik-1.0.jar
+java -jar target/project-manasik-2.1.jar
 ```
 
 ### Download the pre-built binary
