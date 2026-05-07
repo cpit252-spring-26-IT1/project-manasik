@@ -121,7 +121,12 @@ RoadMap of Umrah:
 <img width="1919" height="1138" alt="Roadmap_Umrah" src="https://github.com/user-attachments/assets/bce736c7-6590-4d5b-b2cc-915e77779640" />
 
 Step details:
-<img width="1919" height="1143" alt="Step_Details" src="https://github.com/user-attachments/assets/5761e709-231c-4bd1-ab3d-099d1f9aa134" />
+<img width="1917" height="1134" alt="Screenshot 2026-05-07 234740" src="https://github.com/user-attachments/assets/58fe2f06-8bd0-412b-8389-ee2234b852a7" />
+
+Resume Progress:
+<img width="1919" height="1141" alt="Screenshot 2026-05-07 234723" src="https://github.com/user-attachments/assets/cc251da9-f58b-4738-9de8-5a9aa7b2b88b" />
+
+
 
 ##  License
 
