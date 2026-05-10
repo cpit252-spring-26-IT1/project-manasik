@@ -7,6 +7,7 @@ import sa.edu.kau.fcit.cpit252.project.service.RitualProgressManager;
 import sa.edu.kau.fcit.cpit252.project.service.RitualValidator;
 import sa.edu.kau.fcit.cpit252.project.service.SavedProgress;
 import sa.edu.kau.fcit.cpit252.project.observer.ProgressObserver;
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
 
 import java.util.List;
 
@@ -44,29 +45,31 @@ public class Ritualfacade {
         return ritual != null;
     }
 
-    // Return all steps for the RoadMap
+    // Return all steps for the RoadMap (
     public List<String> getAllSteps(){
         if (ritual == null) return List.of();
-        return ritual.getSteps();
+        return ritual.getSteps(LanguageManager.getInstance().getLanguage());
     }
 
     // Return the name of the step
     public String getStep(int index) {
         if (ritual == null) return "";
-        return ritual.getSteps().get(index);
+        List<String> steps = ritual.getSteps(LanguageManager.getInstance().getLanguage());
+        if (index < 0 || index >= steps.size()) return "";
+        return steps.get(index);
     }
 
     // Return the description of the step
     public String getStepDetails(int index) {
         if (ritual == null) return "";
-        List<String> details = ritual.getDetails();
+        List<String> details = ritual.getDetails(LanguageManager.getInstance().getLanguage());
         if (index < 0 || index >= details.size()) return "";
         return details.get(index);
     }
 
     // Return ritual name (Hajj or Umrah)
     public String getRitualName(){
-        if (ritual == null) return"";
+        if (ritual == null) return "";
         return ritual.getName();
     }
 
