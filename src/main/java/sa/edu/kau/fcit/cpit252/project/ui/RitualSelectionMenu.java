@@ -11,8 +11,8 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
-import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
 import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
+import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
 
 import java.util.Optional;
 
@@ -20,6 +20,7 @@ public class RitualSelectionMenu extends Application {
 
     private final Ritualfacade facade = new Ritualfacade();
     private final ThemeManager theme = ThemeManager.getInstance();
+    private final LanguageManager lang = LanguageManager.getInstance();
 
     @Override
     public void start(Stage stage) {
@@ -38,7 +39,7 @@ public class RitualSelectionMenu extends Application {
         Label brandName = new Label("Manasik");
         brandName.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Theme toggle button (🌓)
+        // Theme toggle button
         Button themeBtn = new Button("🌓");
         themeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;");
@@ -47,10 +48,20 @@ public class RitualSelectionMenu extends Application {
             try { start(stage); } catch (Exception ex) { ex.printStackTrace(); }
         });
 
+        // Language toggle button
+        Button langBtn = new Button(lang.t("btn.lang.toggle"));
+        langBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; " +
+                "-fx-cursor: hand;");
+        langBtn.setOnAction(e -> {
+            lang.toggle();
+            try { start(stage); } catch (Exception ex) { ex.printStackTrace(); }
+        });
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        topBar.getChildren().addAll(brandName, spacer, themeBtn);
+        topBar.getChildren().addAll(brandName, spacer, themeBtn, langBtn);
 
         // --- Center Logo ---
         VBox centerContent = new VBox(15);
@@ -75,9 +86,9 @@ public class RitualSelectionMenu extends Application {
                         "-fx-min-width: 280px; -fx-min-height: 55px; " +
                         "-fx-background-radius: 15; -fx-cursor: hand;";
 
-        Button hajjBtn = new Button("الحج");
+        Button hajjBtn = new Button(lang.t("ritual.hajj"));
         hajjBtn.setStyle(buttonStyle);
-        Button umrahBtn = new Button("العمرة");
+        Button umrahBtn = new Button(lang.t("ritual.umrah"));
         umrahBtn.setStyle(buttonStyle);
 
         buttonContainer.getChildren().addAll(hajjBtn, umrahBtn);
@@ -98,13 +109,15 @@ public class RitualSelectionMenu extends Application {
             int savedStep = facade.getSavedStepIndex(type) + 1;
 
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-            alert.setTitle("متابعة الرحلة");
-            alert.setHeaderText("لديك تقدم محفوظ");
-            alert.setContentText("هل تريد المتابعة من الخطوة " + savedStep + "؟");
+            alert.setTitle(lang.t("dialog.resume.title"));
+            alert.setHeaderText(lang.t("dialog.resume.header"));
+            alert.setContentText(
+                    lang.t("dialog.resume.content") + savedStep + lang.t("dialog.resume.suffix"));
 
-            ButtonType resumeBtn  = new ButtonType("متابعة");
-            ButtonType restartBtn = new ButtonType("البدء من جديد");
-            ButtonType cancelBtn  = new ButtonType("إلغاء", ButtonType.CANCEL.getButtonData());
+            ButtonType resumeBtn  = new ButtonType(lang.t("btn.resume"));
+            ButtonType restartBtn = new ButtonType(lang.t("btn.restart"));
+            ButtonType cancelBtn  = new ButtonType(lang.t("btn.cancel"),
+                    ButtonType.CANCEL.getButtonData());
             alert.getButtonTypes().setAll(resumeBtn, restartBtn, cancelBtn);
 
             Optional<ButtonType> choice = alert.showAndWait();

@@ -11,19 +11,22 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
 import sa.edu.kau.fcit.cpit252.project.observer.ProgressEvent;
 import sa.edu.kau.fcit.cpit252.project.observer.ProgressObserver;
 import sa.edu.kau.fcit.cpit252.project.strategy.CounterStrategy;
 import sa.edu.kau.fcit.cpit252.project.strategy.CounterStrategyResolver;
 import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
-import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
 
 public class StepDetailScreen
-        implements ProgressObserver, ThemeManager.ThemeObserver {
+        implements ProgressObserver,
+        ThemeManager.ThemeObserver,
+        LanguageManager.LanguageObserver {
 
     private final Ritualfacade facade;
     private final int stepIndex;
     private final ThemeManager theme = ThemeManager.getInstance();
+    private final LanguageManager lang = LanguageManager.getInstance();
     private final CounterStrategy counterStrategy;
 
     private int counterValue = 0;
@@ -41,6 +44,7 @@ public class StepDetailScreen
     public void show(Stage stage) {
         this.stage = stage;
         theme.addObserver(this);
+        lang.addObserver(this);
         facade.addObserver(this);
 
         int totalSteps = facade.getAllSteps().size();
@@ -70,10 +74,18 @@ public class StepDetailScreen
                 "-fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;");
         themeBtn.setOnAction(e -> theme.toggle());
 
+        Button langBtn = new Button(lang.t("btn.lang.toggle"));
+        langBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; " +
+                "-fx-cursor: hand;");
+        langBtn.setOnAction(e -> lang.toggle());
+
         Region topSpacer = new Region();
         HBox.setHgrow(topSpacer, Priority.ALWAYS);
 
-        Label titleLabel = new Label(facade.getRitualName());
+        String ritualKey = facade.getRitualName().equalsIgnoreCase("Hajj")
+                ? "ritual.hajj" : "ritual.umrah";
+        Label titleLabel = new Label(lang.t(ritualKey));
         titleLabel.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
 
         Label stepCounter = new Label(stepNumber + " / " + totalSteps);
@@ -82,7 +94,7 @@ public class StepDetailScreen
                         "-fx-font-size: 12px; -fx-font-weight: bold; -fx-padding: 5 12 5 12; " +
                         "-fx-background-radius: 12;");
 
-        topBar.getChildren().addAll(backBtn, themeBtn, titleLabel, topSpacer, stepCounter);
+        topBar.getChildren().addAll(backBtn, themeBtn, langBtn, titleLabel, topSpacer, stepCounter);
 
         // ============== HEADER ==============
         VBox header = new VBox(15);
@@ -97,7 +109,7 @@ public class StepDetailScreen
                         "-fx-max-width: 70px; -fx-max-height: 70px; " +
                         "-fx-background-radius: 35; -fx-alignment: center;");
 
-        Label stepLabel = new Label("الخطوة " + stepNumber);
+        Label stepLabel = new Label(lang.t("label.step") + stepNumber);
         stepLabel.setStyle("-fx-text-fill: " + theme.accentColor() +
                 "; -fx-font-size: 13px; -fx-font-weight: bold;");
 
@@ -106,7 +118,11 @@ public class StepDetailScreen
                 "; -fx-font-size: 24px; -fx-font-weight: bold;");
         stepNameLabel.setWrapText(true);
         stepNameLabel.setAlignment(Pos.CENTER);
-        stepNameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        if (lang.isArabic()) {
+            stepNameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        } else {
+            stepNameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        }
         stepNameLabel.setMaxWidth(Double.MAX_VALUE);
 
         header.getChildren().addAll(stepBadge, stepLabel, stepNameLabel);
@@ -124,7 +140,7 @@ public class StepDetailScreen
         doneRow.setPadding(new Insets(10, 0, 0, 0));
 
         // ============== NAV BUTTONS ==============
-        Button prevBtn = new Button("السابق ←");
+        Button prevBtn = new Button(lang.t("btn.previous"));
         prevBtn.setStyle(
                 "-fx-background-color: " + theme.cardColor() + "; " +
                         "-fx-text-fill: " + theme.primaryTextColor() + "; " +
@@ -139,7 +155,7 @@ public class StepDetailScreen
             new StepDetailScreen(facade, stepIndex - 1).show(stage);
         });
 
-        Button nextBtn = new Button("→ التالي");
+        Button nextBtn = new Button(lang.t("btn.next"));
         nextBtn.setStyle(
                 "-fx-background-color: " + theme.accentColor() + "; -fx-text-fill: white; " +
                         "-fx-font-size: 14px; -fx-font-weight: bold; " +
@@ -199,10 +215,12 @@ public class StepDetailScreen
         accentBar.setMaxWidth(4);
         accentBar.setMinHeight(18);
 
-        Label detailsTitle = new Label("التفاصيل");
+        Label detailsTitle = new Label(lang.t("label.details"));
         detailsTitle.setStyle("-fx-text-fill: " + theme.primaryTextColor() +
                 "; -fx-font-size: 16px; -fx-font-weight: bold;");
-        detailsTitle.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        if (lang.isArabic()) {
+            detailsTitle.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        }
 
         Region headerSpacer = new Region();
         HBox.setHgrow(headerSpacer, Priority.ALWAYS);
@@ -213,7 +231,11 @@ public class StepDetailScreen
                 "-fx-text-fill: " + theme.secondaryTextColor() + "; " +
                         "-fx-font-size: 15px; -fx-line-spacing: 7px;");
         detailsLabel.setWrapText(true);
-        detailsLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        if (lang.isArabic()) {
+            detailsLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        } else {
+            detailsLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        }
         detailsLabel.setMaxWidth(Double.MAX_VALUE);
 
         card.getChildren().addAll(headerRow, detailsLabel);
@@ -264,7 +286,6 @@ public class StepDetailScreen
                 if (counterValue == counterStrategy.getMaxCount()
                         && !facade.isStepCompleted(stepIndex)) {
                     facade.completeCurrentStep();
-                    // Observer callback (onProgressChanged) refreshes the Done button
                 }
             }
         });
@@ -278,7 +299,7 @@ public class StepDetailScreen
 
     private Button buildDoneButton() {
         boolean alreadyDone = facade.isStepCompleted(stepIndex);
-        Button btn = new Button(alreadyDone ? "✓ تم" : "تم");
+        Button btn = new Button(alreadyDone ? lang.t("btn.done.completed") : lang.t("btn.done"));
         btn.setStyle(
                 "-fx-background-color: " + (alreadyDone ? "#4a4a4a" : theme.accentColor()) + "; " +
                         "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; " +
@@ -295,7 +316,7 @@ public class StepDetailScreen
     public void onProgressChanged(ProgressEvent event, int currentIndex) {
         Platform.runLater(() -> {
             boolean done = facade.isStepCompleted(stepIndex);
-            doneBtn.setText(done ? "✓ تم" : "تم");
+            doneBtn.setText(done ? lang.t("btn.done.completed") : lang.t("btn.done"));
             doneBtn.setDisable(done);
             doneBtn.setStyle(
                     "-fx-background-color: " + (done ? "#4a4a4a" : theme.accentColor()) + "; " +
@@ -311,8 +332,15 @@ public class StepDetailScreen
         show(stage);
     }
 
+    @Override
+    public void onLanguageChanged(LanguageManager.Language newLanguage) {
+        unsubscribe();
+        show(stage);
+    }
+
     private void unsubscribe() {
         theme.removeObserver(this);
+        lang.removeObserver(this);
         facade.removeObserver(this);
     }
 }

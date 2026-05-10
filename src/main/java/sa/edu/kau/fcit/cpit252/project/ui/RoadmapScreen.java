@@ -11,15 +11,17 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
-import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
 import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
+import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
 
 import java.util.List;
 
-public class RoadmapScreen implements ThemeManager.ThemeObserver {
+public class RoadmapScreen
+        implements ThemeManager.ThemeObserver, LanguageManager.LanguageObserver {
 
     private final Ritualfacade facade;
     private final ThemeManager theme = ThemeManager.getInstance();
+    private final LanguageManager lang = LanguageManager.getInstance();
     private Stage stage;
 
     public RoadmapScreen(Ritualfacade facade) {
@@ -29,6 +31,7 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
     public void show(Stage stage) {
         this.stage = stage;
         theme.addObserver(this);
+        lang.addObserver(this);
 
         VBox root = new VBox(0);
         root.setStyle("-fx-background-color: " + theme.backgroundColor() + ";");
@@ -45,30 +48,40 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
         backBtn.setStyle("-fx-background-color: transparent; -fx-text-fill: white; " +
                 "-fx-font-size: 20px; -fx-cursor: hand;");
         backBtn.setOnAction(e -> {
-            theme.removeObserver(this);
+            unsubscribe();
             try { new RitualSelectionMenu().start(stage); }
             catch (Exception ex) { ex.printStackTrace(); }
         });
 
-        Button startBtn = new Button("▶ البدأ");
+        Button startBtn = new Button(lang.t("btn.start"));
         startBtn.setStyle(
                 "-fx-background-color: " + theme.accentColor() + "; -fx-text-fill: white; " +
                         "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12; " +
                         "-fx-padding: 8 14 8 14; -fx-cursor: hand;");
 
-        // Theme toggle button
+        // Theme toggle
         Button themeBtn = new Button("🌓");
         themeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;");
         themeBtn.setOnAction(e -> theme.toggle());
 
+        // Language toggle
+        Button langBtn = new Button(lang.t("btn.lang.toggle"));
+        langBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
+                "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; " +
+                "-fx-cursor: hand;");
+        langBtn.setOnAction(e -> lang.toggle());
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        Label title = new Label(facade.getRitualName());
+        // Show ritual name in the chosen language
+        String ritualKey = facade.getRitualName().equalsIgnoreCase("Hajj")
+                ? "ritual.hajj" : "ritual.umrah";
+        Label title = new Label(lang.t(ritualKey));
         title.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
 
-        topBar.getChildren().addAll(backBtn, startBtn, themeBtn, spacer, title);
+        topBar.getChildren().addAll(backBtn, startBtn, themeBtn, langBtn, spacer, title);
 
         // --- Progress Bar ---
         VBox progressBox = new VBox(8);
@@ -76,7 +89,8 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
         progressBox.setAlignment(Pos.CENTER_LEFT);
 
         double progress = facade.getProgressPercentage() / 100.0;
-        Label progressLabel = new Label("التقدم: " + (int) facade.getProgressPercentage() + "%");
+        Label progressLabel = new Label(
+                lang.t("label.progress") + (int) facade.getProgressPercentage() + "%");
         progressLabel.setStyle("-fx-text-fill: " + theme.primaryTextColor() +
                 "; -fx-font-size: 14px; -fx-font-weight: bold;");
 
@@ -96,7 +110,7 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
             final int index = i;
             HBox stepRow = buildStepRow(i, steps.get(i));
             stepRow.setOnMouseClicked(e -> {
-                theme.removeObserver(this);
+                unsubscribe();
                 facade.jumpToStep(index);
                 new StepDetailScreen(facade, index).show(stage);
             });
@@ -110,7 +124,7 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
         VBox.setVgrow(scrollPane, Priority.ALWAYS);
 
         startBtn.setOnAction(e -> {
-            theme.removeObserver(this);
+            unsubscribe();
             facade.jumpToStep(0);
             new StepDetailScreen(facade, 0).show(stage);
         });
@@ -142,7 +156,12 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
 
         Label nameLabel = new Label(stepName);
         nameLabel.setStyle("-fx-text-fill: " + theme.primaryTextColor() + "; -fx-font-size: 14px;");
-        nameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        // Apply RTL only when text is Arabic
+        if (lang.isArabic()) {
+            nameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
+        } else {
+            nameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
+        }
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
         row.getChildren().addAll(numLabel, nameLabel);
@@ -151,8 +170,18 @@ public class RoadmapScreen implements ThemeManager.ThemeObserver {
 
     @Override
     public void onThemeChanged(ThemeManager.Theme newTheme) {
-        // Re-show the screen so all colors are re-applied cleanly
-        theme.removeObserver(this);
+        unsubscribe();
         show(stage);
+    }
+
+    @Override
+    public void onLanguageChanged(LanguageManager.Language newLanguage) {
+        unsubscribe();
+        show(stage);
+    }
+
+    private void unsubscribe() {
+        theme.removeObserver(this);
+        lang.removeObserver(this);
     }
 }
