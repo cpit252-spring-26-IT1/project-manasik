@@ -6,6 +6,7 @@ import sa.edu.kau.fcit.cpit252.project.service.ProgressPersistence;
 import sa.edu.kau.fcit.cpit252.project.service.RitualProgressManager;
 import sa.edu.kau.fcit.cpit252.project.service.RitualValidator;
 import sa.edu.kau.fcit.cpit252.project.service.SavedProgress;
+import sa.edu.kau.fcit.cpit252.project.observer.ProgressObserver;
 
 import java.util.List;
 
@@ -21,6 +22,21 @@ public class Ritualfacade {
         this.validator = new RitualValidator();
         this.persistence = new ProgressPersistence();
     }
+
+
+
+
+    // UI screens call this to subscribe to progress changes.
+    public void addObserver(ProgressObserver observer) {
+        progressManager.addObserver(observer);
+    }
+
+    // UI screens call this when they are no longer visible.
+    public void removeObserver(ProgressObserver observer) {
+        progressManager.removeObserver(observer);
+    }
+
+
 
     // When the user picks Hajj or Umrah
     public boolean startRitual(String type){
