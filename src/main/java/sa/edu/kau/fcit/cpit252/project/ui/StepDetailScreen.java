@@ -16,6 +16,7 @@ import sa.edu.kau.fcit.cpit252.project.observer.ProgressObserver;
 import sa.edu.kau.fcit.cpit252.project.strategy.CounterStrategy;
 import sa.edu.kau.fcit.cpit252.project.strategy.CounterStrategyResolver;
 import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
 
 public class StepDetailScreen
         implements ProgressObserver, ThemeManager.ThemeObserver {

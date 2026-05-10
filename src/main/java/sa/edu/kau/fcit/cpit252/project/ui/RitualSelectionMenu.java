@@ -12,6 +12,7 @@ import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import sa.edu.kau.fcit.cpit252.project.facade.Ritualfacade;
 import sa.edu.kau.fcit.cpit252.project.theme.ThemeManager;
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager;
 
 import java.util.Optional;
 
