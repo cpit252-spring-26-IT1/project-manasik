@@ -1,6 +1,6 @@
 package sa.edu.kau.fcit.cpit252.project.model;
 
-import sa.edu.kau.fcit.cpit252.project.i18n.LanguageManager.Language;
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager.Language;
 
 import java.util.List;
 
