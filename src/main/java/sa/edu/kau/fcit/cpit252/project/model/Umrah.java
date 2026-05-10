@@ -1,57 +1,26 @@
 package sa.edu.kau.fcit.cpit252.project.model;
 
+import sa.edu.kau.fcit.cpit252.project.languages.LanguageManager.Language;
+import sa.edu.kau.fcit.cpit252.project.languages.RitualContent;
+
 import java.util.List;
 
 public class Umrah implements Ritual {
 
-    //return the name of the ritual
+    private static final String KEY = "umrah";
+
     @Override
-    public String getName(){
+    public String getName() {
         return "Umrah";
     }
 
-    //return steps for umrah
     @Override
-    public List<String> getSteps(){
-        return List.of("الإحرام",
-                "الميقات",
-                "عند دخول مكة وبعد دخول المسجد الحرام",
-                "الطواف",
-                "الفراغ من الطواف",
-                "الصلاة عند مقام إبراهيم عليه السلام",
-                "استلام الحجر الأسود",
-                "السعي بين الصفا والمروة",
-                "الحلق و التقصير");
-
+    public List<String> getSteps(Language lang) {
+        return RitualContent.loadStepNames(KEY, lang);
     }
-    // return step details of umrah
-    public List<String> getDetails(){
-        return List.of(  // 1. الإحرام
-                "الإحرام هو نية الدخول في النسك. يغتسل المعتمر ويتطيب ويلبس ثياب الإحرام (إزار ورداء أبيضين للرجل)، ثم ينوي العمرة ويقول: لبيك اللهم عمرة.",
 
-                // 2. الميقات
-                "الميقات هو المكان الذي يحرم منه الحاج أو المعتمر. لا يجوز تجاوزه بدون إحرام لمن أراد العمرة أو الحج.",
-
-                // 3. عند دخول مكة وبعد دخول المسجد الحرام
-                "يدخل المعتمر مكة ملبياً، ويدخل المسجد الحرام برجله اليمنى ويقول دعاء دخول المسجد. عند رؤية الكعبة يرفع يديه ويدعو بما شاء.",
-
-                // 4. الطواف
-                "يبدأ الطواف من الحجر الأسود ويجعل الكعبة عن يساره، ويطوف سبعة أشواط حول الكعبة. يستحب الرمل في الأشواط الثلاثة الأولى للرجال.",
-
-                // 5. الفراغ من الطواف
-                "بعد إتمام سبعة أشواط، يتوجه إلى مقام إبراهيم عليه السلام لأداء ركعتي الطواف.",
-
-                // 6. الصلاة عند مقام إبراهيم
-                "يصلي ركعتين خلف مقام إبراهيم عليه السلام إن تيسر، يقرأ في الأولى سورة الكافرون وفي الثانية سورة الإخلاص.",
-
-                // 7. استلام الحجر الأسود
-                "بعد الصلاة يعود إلى الحجر الأسود ويستلمه إن استطاع، أو يشير إليه بيده.",
-
-                // 8. السعي بين الصفا والمروة
-                "يبدأ السعي من الصفا ويختم بالمروة، سبعة أشواط، ويدعو الله بما شاء بين الشوطين.",
-
-                // 9. الحلق والتقصير
-                "بعد إتمام السعي يحلق المعتمر شعره أو يقصر منه، والحلق أفضل، وبذلك يتحلل من إحرامه وتنتهي العمرة."
-        );
+    @Override
+    public List<String> getDetails(Language lang) {
+        return RitualContent.loadStepDetails(KEY, lang);
     }
 }
