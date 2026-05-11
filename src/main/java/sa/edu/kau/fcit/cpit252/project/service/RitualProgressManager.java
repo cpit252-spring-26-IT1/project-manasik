@@ -21,7 +21,6 @@ public class RitualProgressManager {
         this.observers = new ArrayList<>();
     }
 
-    // ============== OBSERVER REGISTRATION ==============
 
     public void addObserver(ProgressObserver observer) {
         if (observer != null && !observers.contains(observer)) {
@@ -40,8 +39,6 @@ public class RitualProgressManager {
             o.onProgressChanged(event, currentIndex);
         }
     }
-
-    // ============== CURRENT STEP ==============
 
     public int getCurrentIndex() {
         return currentIndex;
@@ -62,7 +59,6 @@ public class RitualProgressManager {
         notifyObservers(ProgressEvent.STEP_CHANGED);
     }
 
-    // ============== COMPLETED STEPS ==============
 
     public Set<Integer> getCompletedSteps() {
         return completedSteps;
@@ -73,18 +69,23 @@ public class RitualProgressManager {
         notifyObservers(ProgressEvent.STEP_COMPLETED);
     }
 
+    public void undoStep(int index) {
+        completedSteps.remove(index);
+        notifyObservers(ProgressEvent.STEP_COMPLETED);
+    }
+
+
     public boolean isStepCompleted(int index) {
         return completedSteps.contains(index);
     }
 
-    // ============== PROGRESS ==============
+
 
     public double getProgressPerecentage(int totalSteps) {
         if (totalSteps == 0) return 0.0;
         return ((double) completedSteps.size() / totalSteps) * 100.0;
     }
 
-    // ============== RESET / RESTORE ==============
 
     public void reset() {
         currentIndex = 0;

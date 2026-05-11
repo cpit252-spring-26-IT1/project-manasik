@@ -37,7 +37,6 @@ public class StepDetailScreen
     public StepDetailScreen(Ritualfacade facade, int stepIndex) {
         this.facade = facade;
         this.stepIndex = stepIndex;
-        // Strategy chosen ONCE per step based on the step name
         this.counterStrategy = CounterStrategyResolver.resolve(facade.getStep(stepIndex));
     }
 
@@ -118,11 +117,8 @@ public class StepDetailScreen
                 "; -fx-font-size: 24px; -fx-font-weight: bold;");
         stepNameLabel.setWrapText(true);
         stepNameLabel.setAlignment(Pos.CENTER);
-        if (lang.isArabic()) {
-            stepNameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        } else {
-            stepNameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-        }
+        stepNameLabel.setNodeOrientation(
+                lang.isArabic() ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
         stepNameLabel.setMaxWidth(Double.MAX_VALUE);
 
         header.getChildren().addAll(stepBadge, stepLabel, stepNameLabel);
@@ -133,7 +129,7 @@ public class StepDetailScreen
         // ============== COUNTER CARD (Strategy pattern) ==============
         VBox counterCard = buildCounterCard();
 
-        // ============== DONE BUTTON ==============
+        // ============== DONE / UNDO BUTTON ==============
         doneBtn = buildDoneButton();
         HBox doneRow = new HBox(doneBtn);
         doneRow.setAlignment(Pos.CENTER);
@@ -196,6 +192,8 @@ public class StepDetailScreen
         stage.show();
     }
 
+    // ============== CARD BUILDERS ==============
+
     private VBox buildDetailsCard() {
         VBox card = new VBox(15);
         card.setPadding(new Insets(20, 22, 22, 22));
@@ -218,9 +216,7 @@ public class StepDetailScreen
         Label detailsTitle = new Label(lang.t("label.details"));
         detailsTitle.setStyle("-fx-text-fill: " + theme.primaryTextColor() +
                 "; -fx-font-size: 16px; -fx-font-weight: bold;");
-        if (lang.isArabic()) {
-            detailsTitle.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        }
+        if (lang.isArabic()) detailsTitle.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
 
         Region headerSpacer = new Region();
         HBox.setHgrow(headerSpacer, Priority.ALWAYS);
@@ -231,18 +227,14 @@ public class StepDetailScreen
                 "-fx-text-fill: " + theme.secondaryTextColor() + "; " +
                         "-fx-font-size: 15px; -fx-line-spacing: 7px;");
         detailsLabel.setWrapText(true);
-        if (lang.isArabic()) {
-            detailsLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        } else {
-            detailsLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-        }
+        detailsLabel.setNodeOrientation(
+                lang.isArabic() ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
         detailsLabel.setMaxWidth(Double.MAX_VALUE);
 
         card.getChildren().addAll(headerRow, detailsLabel);
         return card;
     }
 
-    /** Counter UI driven entirely by the CounterStrategy. */
     private VBox buildCounterCard() {
         VBox card = new VBox(15);
         card.setPadding(new Insets(18, 22, 22, 22));
@@ -282,7 +274,6 @@ public class StepDetailScreen
             if (counterValue < counterStrategy.getMaxCount()) {
                 counterValue++;
                 counterValueLabel.setText(counterValue + " / " + counterStrategy.getMaxCount());
-                // Auto-mark step done when counter hits the max
                 if (counterValue == counterStrategy.getMaxCount()
                         && !facade.isStepCompleted(stepIndex)) {
                     facade.completeCurrentStep();
@@ -292,22 +283,53 @@ public class StepDetailScreen
 
         HBox controls = new HBox(20, minus, counterValueLabel, plus);
         controls.setAlignment(Pos.CENTER);
-
         card.getChildren().addAll(title, controls);
         return card;
     }
 
+    /**
+     * Builds the Done/Undo toggle button.
+     *
+     * - When step is NOT done  → green "تم / Done" button → clicking marks it done
+     * - When step IS done      → gray  "↩ تراجع / ↩ Undo" button → clicking undoes it
+     */
     private Button buildDoneButton() {
         boolean alreadyDone = facade.isStepCompleted(stepIndex);
-        Button btn = new Button(alreadyDone ? lang.t("btn.done.completed") : lang.t("btn.done"));
-        btn.setStyle(
-                "-fx-background-color: " + (alreadyDone ? "#4a4a4a" : theme.accentColor()) + "; " +
-                        "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; " +
-                        "-fx-min-width: 280px; -fx-min-height: 50px; " +
-                        "-fx-background-radius: 15; -fx-cursor: hand;");
-        btn.setDisable(alreadyDone);
-        btn.setOnAction(e -> facade.completeCurrentStep());
+        Button btn = new Button();
+        applyDoneButtonState(btn, alreadyDone);
+
+        btn.setOnAction(e -> {
+            boolean isDone = facade.isStepCompleted(stepIndex);
+            if (isDone) {
+                facade.undoCurrentStep();   // undo
+            } else {
+                facade.completeCurrentStep(); // mark done
+            }
+            // Observer callback (onProgressChanged) handles the visual refresh
+        });
         return btn;
+    }
+
+    /** Applies the correct label, color, and size to the done/undo button. */
+    private void applyDoneButtonState(Button btn, boolean isDone) {
+        if (isDone) {
+            // Gray "undo" state
+            btn.setText(lang.isArabic() ? "↩ تراجع" : "↩ Undo");
+            btn.setStyle(
+                    "-fx-background-color: #4a4a4a; -fx-text-fill: white; " +
+                            "-fx-font-size: 16px; -fx-font-weight: bold; " +
+                            "-fx-min-width: 280px; -fx-min-height: 50px; " +
+                            "-fx-background-radius: 15; -fx-cursor: hand;");
+        } else {
+            // Green "done" state
+            btn.setText(lang.isArabic() ? lang.t("btn.done") : lang.t("btn.done"));
+            btn.setStyle(
+                    "-fx-background-color: " + theme.accentColor() + "; -fx-text-fill: white; " +
+                            "-fx-font-size: 16px; -fx-font-weight: bold; " +
+                            "-fx-min-width: 280px; -fx-min-height: 50px; " +
+                            "-fx-background-radius: 15; -fx-cursor: hand;");
+        }
+        btn.setDisable(false); // always enabled — it's a toggle now
     }
 
     // ============== OBSERVER CALLBACKS ==============
@@ -315,14 +337,9 @@ public class StepDetailScreen
     @Override
     public void onProgressChanged(ProgressEvent event, int currentIndex) {
         Platform.runLater(() -> {
+            // Refresh the done/undo button to reflect the new state
             boolean done = facade.isStepCompleted(stepIndex);
-            doneBtn.setText(done ? lang.t("btn.done.completed") : lang.t("btn.done"));
-            doneBtn.setDisable(done);
-            doneBtn.setStyle(
-                    "-fx-background-color: " + (done ? "#4a4a4a" : theme.accentColor()) + "; " +
-                            "-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; " +
-                            "-fx-min-width: 280px; -fx-min-height: 50px; " +
-                            "-fx-background-radius: 15; -fx-cursor: hand;");
+            applyDoneButtonState(doneBtn, done);
         });
     }
 

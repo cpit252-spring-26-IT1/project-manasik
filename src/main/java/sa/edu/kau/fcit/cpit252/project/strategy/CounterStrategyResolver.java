@@ -9,15 +9,17 @@ public class CounterStrategyResolver {
 
     public static CounterStrategy resolve(String stepName) {
         if (stepName == null) return NO_COUNTER;
+        String trimmed = stepName.trim();
         String lower = stepName.toLowerCase();
 
         // Arabic
-        if (stepName.contains("طواف") || stepName.contains("الطواف")) return TAWAF;
-        if (stepName.contains("سعي") || stepName.contains("السعي")) return SAI;
+        if (trimmed.equals("الطواف")) return TAWAF;
+        if (trimmed.startsWith("طواف")) return TAWAF;
+        if (trimmed.startsWith("السعي")) return SAI;
 
         // English
-        if (lower.contains("tawaf")) return TAWAF;
-        if(lower.contains("sa'i") || lower.contains("sai")) return SAI;
+        if (lower.startsWith("tawaf")) return TAWAF;
+        if (lower.startsWith("sa'i") || lower.startsWith("sai")) return SAI;
 
         return NO_COUNTER;
     }

@@ -59,13 +59,11 @@ public class RoadmapScreen
                         "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 12; " +
                         "-fx-padding: 8 14 8 14; -fx-cursor: hand;");
 
-        // Theme toggle
         Button themeBtn = new Button("🌓");
         themeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;");
         themeBtn.setOnAction(e -> theme.toggle());
 
-        // Language toggle
         Button langBtn = new Button(lang.t("btn.lang.toggle"));
         langBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; " +
@@ -75,7 +73,6 @@ public class RoadmapScreen
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Show ritual name in the chosen language
         String ritualKey = facade.getRitualName().equalsIgnoreCase("Hajj")
                 ? "ritual.hajj" : "ritual.umrah";
         Label title = new Label(lang.t(ritualKey));
@@ -156,12 +153,8 @@ public class RoadmapScreen
 
         Label nameLabel = new Label(stepName);
         nameLabel.setStyle("-fx-text-fill: " + theme.primaryTextColor() + "; -fx-font-size: 14px;");
-        // Apply RTL only when text is Arabic
-        if (lang.isArabic()) {
-            nameLabel.setNodeOrientation(NodeOrientation.RIGHT_TO_LEFT);
-        } else {
-            nameLabel.setNodeOrientation(NodeOrientation.LEFT_TO_RIGHT);
-        }
+        nameLabel.setNodeOrientation(
+                lang.isArabic() ? NodeOrientation.RIGHT_TO_LEFT : NodeOrientation.LEFT_TO_RIGHT);
         HBox.setHgrow(nameLabel, Priority.ALWAYS);
 
         row.getChildren().addAll(numLabel, nameLabel);

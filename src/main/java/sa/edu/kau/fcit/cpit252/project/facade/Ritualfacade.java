@@ -88,6 +88,19 @@ public class Ritualfacade {
         return true;
     }
 
+    // undoes the current step
+    public boolean undoCurrentStep() {
+        if (ritual == null) return false;
+        int current = progressManager.getCurrentIndex();
+        int total = ritual.getSteps().size();
+        if (!validator.canUndo(current, total, progressManager.getCompletedSteps())) {
+            return false;
+        }
+        progressManager.undoStep(current);
+        persist();
+        return true;
+    }
+
     // Check if step is completed
     public boolean isStepCompleted(int index) {
         return progressManager.isStepCompleted(index);

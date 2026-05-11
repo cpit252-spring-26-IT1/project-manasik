@@ -36,10 +36,12 @@ public class RitualSelectionMenu extends Application {
         topBar.setStyle("-fx-background-color: " + theme.topBarColor() +
                 "; -fx-background-radius: 0 0 25 25;");
 
-        Label brandName = new Label("Manasik");
+        // App name switches with language
+        String brandText = lang.isArabic() ? "مناسك" : "Manasik";
+        Label brandName = new Label(brandText);
         brandName.setStyle("-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;");
 
-        // Theme toggle button
+        // Theme toggle
         Button themeBtn = new Button("🌓");
         themeBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-background-radius: 10; -fx-cursor: hand;");
@@ -48,7 +50,7 @@ public class RitualSelectionMenu extends Application {
             try { start(stage); } catch (Exception ex) { ex.printStackTrace(); }
         });
 
-        // Language toggle button
+        // Language toggle
         Button langBtn = new Button(lang.t("btn.lang.toggle"));
         langBtn.setStyle("-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white; " +
                 "-fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 10; " +
@@ -71,12 +73,14 @@ public class RitualSelectionMenu extends Application {
         Label kaabaIcon = new Label("🕋");
         kaabaIcon.setStyle("-fx-font-size: 80px;");
 
-        Label mainTitle = new Label("Manasik");
+        // Center title also switches with language
+        String centerText = lang.isArabic() ? "مناسك" : "Manasik";
+        Label mainTitle = new Label(centerText);
         mainTitle.setStyle("-fx-text-fill: " + theme.primaryTextColor() + "; -fx-font-size: 28px;");
 
         centerContent.getChildren().addAll(kaabaIcon, mainTitle);
 
-        // --- Buttons ---
+        // --- Ritual Buttons ---
         VBox buttonContainer = new VBox(15);
         buttonContainer.setAlignment(Pos.CENTER);
 
@@ -96,7 +100,7 @@ public class RitualSelectionMenu extends Application {
         root.getChildren().addAll(topBar, centerContent, buttonContainer);
 
         Scene scene = new Scene(root, 360, 740);
-        stage.setTitle("Manasik");
+        stage.setTitle(lang.isArabic() ? "مناسك" : "Manasik");
         stage.setScene(scene);
         stage.show();
 

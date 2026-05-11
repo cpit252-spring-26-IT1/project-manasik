@@ -24,4 +24,11 @@ public class RitualValidator {
        if (currentIndex < 0 || currentIndex >= totalSteps) return false;
        return !completedSteps.contains(currentIndex);
     }
+
+    // can undo only if the step is currently completed and index is valid
+    public boolean canUndo(int currentIndex, int totalSteps, Set<Integer> completedSteps) {
+        if (currentIndex < 0 || currentIndex >= totalSteps) return false;
+        return completedSteps.contains(currentIndex);
+    }
+
 }
