@@ -133,7 +133,7 @@ mvn javafx:run
 Or, after building, run the packaged JAR:
 
 ```bash
-java -jar target/project-manasik-2.1.jar
+java -jar target/project-manasik-3.0.jar
 ```
 
 ### Download the pre-built binary
