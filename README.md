@@ -27,11 +27,6 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 | 6 | Complete Step & Progress Tracking | mark steps as done, progress bar and checkmarks update in real time.
 | 7 | Next / Previous Step Navigation | navigate between steps from the Step Detail screen with disabled at boundary buttons.
 | 8 | Resume Progress / Save State | progress is automatically saved to disk and restored when the app is reopened.
-
-###  Planned
-
-| # | Feature |                                                      Description
-
 | 9 | Tawaf and Sa'i Counter | At each step that involves Tawaf or Sa'i the user gets a counter that goes up to 7 to track how many rounds have been completed.
 | 10 | Dark Mode / Light Mode toggle | Switch the entire app between a dark and a light theme from settings.
 | 11 | Multi-language support (Arabic / English) |  (Arabic / English)Switch all step names, details, and UI labels between Arabic and English.
@@ -69,6 +64,42 @@ The four subsystems coordinated by the Facade:
 3- decides whether actions are allowed canGoNext, canGoPrevious, isValidJump and canMarkDone.
 4- saves and loads progress to a small properties file in the user's home directory so progress survives app restarts.
 
+### 3. Behavioral — Observer Pattern (Stage 3)
+   
+Files:
+ProgressObserver.java — observer interface
+ProgressEvent.java — event enum
+RitualProgressManager.java — subject (progress)
+ThemeManager.java — subject (theme)
+LanguageManager.java — subject (language)
+
+Why we chose it:
+Before Stage 3, every time the user marked a step done the screen had to be manually rebuilt by creating a new screen instance.
+This was a code smell the ui was tightly coupled to the act of refreshing itself, and adding new reactive features (theme toggle, language toggle, counter)
+would have multiplied that problem.
+The Observer pattern fixes this cleanly RitualProgressManager becomes the subject:
+it keeps a list of registered observers and fires onProgressChanged(event, currentIndex) every time its state changes. 
+The ui screens (RoadmapScreen, StepDetailScreen) implement ProgressObserver and react automatically the manager has zero knowledge of the ui.
+The same pattern is applied two more times for cross-cutting concerns:
+ThemeManager is a subject; all three screens implement ThemeObserver and re-style themselves when the theme is toggled.
+LanguageManager is a subject; all three screens implement LanguageObserver and relabel themselves when the language is toggled.
+This made all three planned features (Tawaf/Sa'i counter, dark mode, language toggle) straightforward to add without modifying the core progress logic.
+
+
+### 4. Behavioral — Strategy Pattern (Stage 3)
+
+Files:
+CounterStrategy.java — Strategy interface
+TawafSaiStrategy.java — Concrete strategy for 7-round steps
+NoCounterStrategy.java — Concrete strategy for steps without a counter
+CounterStrategyResolver.java — Picks the right strategy by step name
+
+Why we chose it:
+Some ritual steps (Tawaf, Sa'i) need a 1–7 round counter; other steps don't, instead of putting if/else checks inside StepDetailScreen to decide whether to show a counter,
+each step is given a CounterStrategy at construction time and the ui just asks:
+if (counterStrategy.hasCounter()) {
+ show counter card with max = counterStrategy.getMaxCount()
+}
 
 ##  Build & Run
 
