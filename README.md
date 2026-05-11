@@ -15,7 +15,7 @@ Manasik solves this by guiding the user step-by-step from start to finish, with 
 
 ##  Features
 
-###  Implemented (v1.0,v2.0,v2.1)
+###  Implemented (v1.0,v2.0,v2.1,v3.0)
 
 | # | Feature |                                    Description
 
@@ -39,7 +39,8 @@ The project uses a clean layered architecture with two design patterns from the 
 
 ### 1. Creational — Factory Pattern (Stage 1)
 
-**File:** [`RitualFactory.java`](src/main/java/sa/edu/kau/fcit/cpit252/project/factory/RitualFactory.java)
+File:
+RitualFactory.java
 
 Why we chose it:
 We have two ritual types (Hajj and Umrah) that share the same Ritual interface,
@@ -48,7 +49,8 @@ The Factory keeps the UI decoupled from the concrete classes and makes it easy t
 
 ### 2. Structural — Facade Pattern (Stage 2)
 
-**File:** [`RitualFacade.java`](src/main/java/sa/edu/kau/fcit/cpit252/project/facade/RitualFacade.java)
+File:
+RitualFacade.java
 
 Why we chose it:
 Every user action in the app involves coordinating several subsystems creating the right ritual, validating whether the action is allowed,
@@ -142,17 +144,20 @@ A ready-to-run JAR is available on the [Releases page](https://github.com/cpit25
 
 ##  Screenshots
 
-Selection screen:
-<img width="1919" height="1139" alt="Selection_Screen" src="https://github.com/user-attachments/assets/bfa40d7d-2491-4780-bad5-80b57ee5960b" />
+Selection screen, Dark Mode, Arabic:
+<img width="1919" height="1141" alt="Screenshot 2026-05-11 202945" src="https://github.com/user-attachments/assets/c9279a64-af17-4aa9-aa98-8f8311e67dbd" />
 
-RoadMap of Hajj:
-<img width="1919" height="1141" alt="RoadMap_Hajj" src="https://github.com/user-attachments/assets/fdea9e41-e717-40f4-8b0a-4c7f832e3793" />
+Selection screen, Light Mode, English:
+<img width="1919" height="1141" alt="Screenshot 2026-05-11 203015" src="https://github.com/user-attachments/assets/8be270ff-2139-4331-b4c3-f1ce7b30e6f4" />
 
-RoadMap of Umrah:
-<img width="1919" height="1138" alt="Roadmap_Umrah" src="https://github.com/user-attachments/assets/bce736c7-6590-4d5b-b2cc-915e77779640" />
+RoadMap of Hajj, Start Journey:
+<img width="1919" height="1143" alt="Screenshot 2026-05-11 203101" src="https://github.com/user-attachments/assets/03e0a093-e174-45bd-b068-0ce3e898f938" />
 
-Step details:
-<img width="1917" height="1134" alt="Screenshot 2026-05-07 234740" src="https://github.com/user-attachments/assets/58fe2f06-8bd0-412b-8389-ee2234b852a7" />
+RoadMap of Umrah, Progress Tracking:
+<img width="1919" height="1139" alt="Screenshot 2026-05-11 203120" src="https://github.com/user-attachments/assets/9b34ba54-72f2-4883-a128-9898c479bbce" />
+
+Step details, Complete Step, Next / Previous Step Navigation, Tawaf and Sa'i Counter,  :
+<img width="1919" height="1140" alt="Screenshot 2026-05-11 203142" src="https://github.com/user-attachments/assets/433d3666-ce68-4b2d-825d-c4777ae2b9ce" />
 
 Resume Progress:
 <img width="1919" height="1141" alt="Screenshot 2026-05-07 234723" src="https://github.com/user-attachments/assets/cc251da9-f58b-4738-9de8-5a9aa7b2b88b" />
