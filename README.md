@@ -114,35 +114,74 @@ if (counterStrategy.hasCounter()) {
 ### Clone the repository
 
 ```bash
+
 git clone https://github.com/cpit252-spring-26-IT1/project-manasik.git
 cd project-manasik
+
 ```
 
 ### Build the project
 
 ```bash
+
 mvn clean install
+
 ```
 
 ### Run the application
 
 ```bash
+
 mvn javafx:run
+
 ```
 
 Or, after building, run the packaged JAR:
 
+##v1
+```bash
+
+java -jar out/artifacts/Manasik_jar/Manasik.jar
+
+```
+##v2
+```bash
+
+java -jar out/artifacts/Manasik_jar2/Manasik.jar
+
+```
+##v2.1
+```bash
+
+java -jar out/artifacts/Manasik_jar2.1/Manasik.jar
+
+```
+##v3.0
 ```bash
 
 java -jar out/artifacts/Manasik_jar3.0/Manasik.jar
 
 ```
 
+Or, via Docker:
+1.  Ensure Docker Desktop is installed and running.
+2.  Navigate to the project root directory.
+3.  Execute the following command:
+
+```bash
+
+docker-compose up --build
+
+```
+*Note: Since this is a JavaFX application, GUI rendering inside the container requires an X11 server on the host (e.g., VcXsrv).
+However, the container will successfully build and initialize the application logic as shown in the logs.*
+
 ### Download the pre-built binary
 
 A ready-to-run JAR is available on the [Releases page](https://github.com/cpit252-spring-26-IT1/project-manasik/releases).
 
 ---
+
 
 ##  Screenshots
 
