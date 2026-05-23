@@ -208,7 +208,6 @@ Resume Progress:
 Generative AI tools
 
 We used claude AI as an assistant during this project it helped with suggesting code structure, JavaFX UI screens and improving the README.
-All design decisions and core logic were done by us.
 
 
 ---
