@@ -203,6 +203,36 @@ Step details, Complete Step, Next / Previous Step Navigation, Tawaf and Sa'i Cou
 Resume Progress:
 <img width="1919" height="1141" alt="Screenshot 2026-05-07 234723" src="https://github.com/user-attachments/assets/cc251da9-f58b-4738-9de8-5a9aa7b2b88b" />
 
+---
+
+Generative AI tools
+
+We used claude AI as an assistant during this project it helped with suggesting code structure, JavaFX UI screens and improving the README.
+All design decisions and core logic were done by us.
+
+
+---
+
+---
+
+Testing
+Unit tests are located in src/test/java/ and cover the following classes:
+
+Test Class          |           Classes Under Test     |       Patterns Covered
+
+RitualValidatorTest  |           RitualValidator       |       Boundary & logic tests for all navigation/completion rules
+RitualProgressManagerTest   |  RitualProgressManager   |       Observer pattern, navigation, state, reset, restore
+RitualFactoryAndStrategyTest |  RitualFactory,         |        Factory pattern, Strategy pattern
+                                CounterStrategyResolver
+Run tests with:
+
+```bash
+
+mvn test
+
+```
+---
+
 
 
 ##  License
