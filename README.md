@@ -180,6 +180,14 @@ However, the container will successfully build and initialize the application lo
 
 A ready-to-run JAR is available on the [Releases page](https://github.com/cpit252-spring-26-IT1/project-manasik/releases).
 
+
+### Android Version
+
+We also created an Android version of the app for mobile devices.
+Download the pre-built binary & Android APK
+A ready-to-run JAR and the Android APK are available on the Releases page.
+[Releases page](https://github.com/cpit252-spring-26-IT1/project-manasik/releases/tag/v4.0)
+
 ---
 
 
